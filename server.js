@@ -45,8 +45,18 @@ app.use('/api/diary', require('./routes/diary'));
 app.use('/api/memory', require('./routes/memory'));
 app.use('/api/ai', require('./routes/proxy'));
 
+// Cache-busting: always revalidate HTML to pick up new versions
+app.use((req, res, next) => {
+    if (req.path === '/' || req.path.endsWith('.html')) {
+        res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '0');
+    }
+    next();
+});
+
 // Serve static frontend files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, etag: true }));
 
 // SPA fallback - all non-API routes serve index.html
 app.use((req, res) => {
