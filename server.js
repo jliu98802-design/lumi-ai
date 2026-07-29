@@ -58,11 +58,28 @@ app.use((req, res, next) => {
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, etag: true }));
 
-// SPA fallback - all non-API routes serve index.html
+// SPA fallback with version-based cache busting
+const CURRENT_VERSION = '21.6';
+app.get('/', (req, res) => {
+  // Redirect to versioned URL to force fresh JS load
+  if (!req.query.v || req.query.v !== CURRENT_VERSION) {
+    return res.redirect(302, `/?v=${CURRENT_VERSION}`);
+  }
+  // Already versioned - serve with no-cache headers
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
     res.status(404).json({ error: '接口不存在' });
   } else {
+    // For other paths, serve index.html with version check
+    if (!req.query.v || req.query.v !== CURRENT_VERSION) {
+      return res.redirect(302, `/?v=${CURRENT_VERSION}`);
+    }
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   }
 });
