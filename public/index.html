@@ -25,7 +25,7 @@ body{background:var(--bg-primary)}
 .splash-loader{margin-top:40px;width:40px;height:40px;border-radius:50%;border:2px solid rgba(196,162,101,.2);border-top-color:var(--warm-gold);animation:splashSpin 1s linear infinite,splashFade 1s ease 1.2s forwards}
 @keyframes splashSpin{to{transform:rotate(360deg)}}
 .splash-tagline{position:absolute;bottom:60px;font-size:11px;color:rgba(250,248,245,.25);letter-spacing:2px;opacity:0;animation:splashFade 1s ease 1.5s forwards}
-.page{position:absolute;inset:0;opacity:0;pointer-events:none;display:flex;flex-direction:column;overflow:hidden;transition:opacity .4s cubic-bezier(.4,0,.2,1),transform .4s cubic-bezier(.4,0,.2,1);transform:translateX(20px) scale(.98);padding-bottom:76px}
+.page{position:absolute;inset:0;opacity:0;pointer-events:none;display:flex;flex-direction:column;overflow:hidden;transition:opacity .4s cubic-bezier(.4,0,.2,1),transform .4s cubic-bezier(.4,0,.2,1);transform:translateX(20px) scale(.98);padding-bottom:100px}
 .page.active{opacity:1;transform:none;pointer-events:auto;z-index:10}
 .bnav{position:absolute;bottom:0;left:0;right:0;height:68px;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;justify-content:space-around;align-items:center;z-index:100;border-top:1px solid rgba(196,162,101,.08);padding-bottom:env(safe-area-inset-bottom)}
 .bnav .ni{position:absolute;top:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--theme-primary),transparent);border-radius:1px;transition:left .35s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1)}
@@ -523,12 +523,12 @@ body{background:var(--bg-primary)}
     40%{transform:translateY(-10px) scale(1.2);opacity:1;box-shadow:0 0 12px rgba(196,162,101,.8)}
 }
 
-/* Character card 3D flip */
-.char-card-v21{perspective:800px;position:relative}
-.char-card-inner{transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;position:relative}
-.char-card-v21.flipped .char-card-inner{transform:rotateY(180deg)}
+/* Character card - lightweight animation (no 3D for mobile performance) */
+.char-card-v21{position:relative;overflow:hidden}
+.char-card-inner{transition:opacity .3s ease,transform .3s ease;position:relative}
+.char-card-v21.flipping .char-card-inner{opacity:0;transform:scale(.92)}
 .char-card-front,.char-card-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.char-card-back{position:absolute;inset:0;transform:rotateY(180deg);
+.char-card-back{position:absolute;inset:0;opacity:0;
     background:rgba(250,248,245,.08);border-radius:var(--radius-card);
     padding:18px;display:flex;flex-direction:column;justify-content:center;align-items:center;
     text-align:center;gap:8px}
@@ -1518,12 +1518,12 @@ renderChars=function(){
         let flipped=false;
         card.addEventListener('click',()=>{
             if(!flipped){
-                card.querySelector('.char-card-inner').style.transform='rotateY(180deg)';
+                card.classList.add('flipping');
                 flipped=true;
                 setTimeout(()=>{
-                    card.querySelector('.char-card-inner').style.transform='';
+                    card.classList.remove('flipping');
                     flipped=false;
-                },3000);
+                },300);
             }else{
                 switchCharacter(k);
             }
