@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="app-version" content="V21.5-20260729">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
@@ -827,7 +828,7 @@ let typewriterTimers=[];
 // ==================== API ====================
 const LumiAPI={
     headers(){const h={'Content-Type':'application/json'};if(authToken)h['Authorization']='Bearer '+authToken;return h},
-    async request(method,path,body){if(!authToken)return null;try{const opts={method,headers:this.headers()};if(body)opts.body=JSON.stringify(body);const r=await fetch(API_BASE_URL+path,opts);if(r.status===401){authToken='';isLoggedIn=false;localStorage.removeItem('lumi_token');updateAuthUI();showToast('登录已过期');return null}if(!r.ok)throw new Error(r.status);const ct=r.headers.get('content-type')||'';if(ct.includes('application/json'))return await r.json();return await r.text()}catch(e){return null}},
+    async request(method,path,body){if(!authToken)return null;try{const opts={method,headers:this.headers()};if(body)opts.body=JSON.stringify(body);const r=await fetch(API_BASE_URL+path,opts);if(r.status===401||r.status===403){authToken='';isLoggedIn=false;localStorage.removeItem('lumi_token');localStorage.removeItem('lumi_username');updateAuthUI();showToast('登录已过期，请重新登录');return null}if(!r.ok)throw new Error(r.status);const ct=r.headers.get('content-type')||'';if(ct.includes('application/json'))return await r.json();return await r.text()}catch(e){return null}},
     async login(u,p){const r=await fetch(API_BASE_URL+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});if(!r.ok){const t=await r.json().catch(()=>({}));throw new Error(t.error||r.status)}return r.json()},
     async register(u,p){const r=await fetch(API_BASE_URL+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});if(!r.ok){const t=await r.json().catch(()=>({}));throw new Error(t.error||r.status)}return r.json()},
     async getProfile(){return this.request('GET','/api/profile')},
@@ -1285,7 +1286,7 @@ async function sendMessage(text){
     }catch(e){
         hideThink();
         $('chAvatar').classList.remove('speaking');
-        let em='网络好像出了点问题...';
+        let em='网络好像出了点问题...';console.error('Chat error:',e.message,e.stack);
         if(e.message.includes('401'))em='API Key好像不太对...能检查一下吗？';
         else if(e.message.includes('429'))em='对方好像太忙了...等一下再试试？';
         addMsg('l',em,timeStr());
@@ -1296,11 +1297,35 @@ async function sendMessage(text){
 function sendPrompt(t){$('chatInput').value=t;sendMessage(t)}
 function sendSticker(s){addMsg('u',s,timeStr());conv.push({role:'user',content:s,time:timeStr()});saveChat();$('stickerPanel').classList.remove('show');setTimeout(()=>{const r=['哈哈 😄','收到啦~','好可爱！','嗯嗯 ✨','🤗','感受到你了'];addMsg('l',r[Math.floor(Math.random()*r.length)],timeStr(),true);Audio.play('receive')},800)}
 async function callAPI(){
-    if(isLoggedIn){const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];const result=await LumiAPI.aiChat(currentChar,msgs,0.9,500);if(result&&result.content)return result.content;if(result===null&&!isLoggedIn){}else if(result)throw new Error('AI返回为空');if(!S.apiKey)throw new Error('云端服务暂时不可用')}
-    const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];
-    const r=await fetch(S.apiBase+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.apiKey},body:JSON.stringify({model:S.model,messages:msgs,temperature:.9,max_tokens:500,top_p:.95,frequency_penalty:.3,presence_penalty:.3})});
-    if(!r.ok){const t=await r.text();throw new Error(r.status+': '+t.substring(0,200))}
-    const d=await r.json();return d.choices[0].message.content;
+    // Primary: try backend API when logged in
+    if(isLoggedIn&&authToken){
+        try{
+            const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];
+            const result=await LumiAPI.aiChat(currentChar,msgs,0.9,500);
+            // Handle all response types safely
+            if(typeof result==='string'&&result.length>0)return result;
+            if(result&&typeof result.content==='string'&&result.content.length>0)return result.content;
+            // Backend returned null/empty - retry once
+            const retry=await LumiAPI.aiChat(currentChar,msgs,0.9,500);
+            if(typeof retry==='string'&&retry.length>0)return retry;
+            if(retry&&typeof retry.content==='string'&&retry.content.length>0)return retry.content;
+            throw new Error('云端返回为空');
+        }catch(e){
+            // If backend fails, try personal API key as fallback
+            if(!S.apiKey){
+                // Show detailed error for debugging
+                throw new Error(e.message||'云端服务暂时不可用');
+            }
+        }
+    }
+    // Fallback: personal API key
+    if(S.apiKey){
+        const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];
+        const r=await fetch(S.apiBase+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.apiKey},body:JSON.stringify({model:S.model,messages:msgs,temperature:.9,max_tokens:500,top_p:.95,frequency_penalty:.3,presence_penalty:.3})});
+        if(!r.ok){const t=await r.text();throw new Error(r.status+': '+t.substring(0,200))}
+        const d=await r.json();return d.choices[0].message.content;
+    }
+    throw new Error('请先登录');
 }
 function detectEmo(t){if(/开心|高兴|棒|不错|好|哈哈/.test(t))return{e:'😊',t:'感受到你的开心'};if(/累|疲|辛苦|倦/.test(t))return{e:'😴',t:'心疼你'};if(/焦虑|担心|压力|紧张/.test(t))return{e:'😰',t:'别怕，慢慢来'};if(/烦|气|怒|讨厌/.test(t))return{e:'😤',t:'我理解'};if(/孤独|一个人|没人|想家/.test(t))return{e:'🥺',t:'我陪着你'};return null}
 function showChips(t){const chips=['聊点别的','你今天怎么样','讲个故事吧'];if(/累|疲/.test(t))chips.unshift('谢谢你陪我');if(/开心|高兴/.test(t))chips.unshift('哈哈再聊会');const row=$('quickRow');row.innerHTML='';chips.forEach(c=>{const d=document.createElement('div');d.className='q-chip';d.textContent=c;d.onclick=()=>{row.innerHTML='';sendMessage(c)};row.appendChild(d)})}
