@@ -1288,7 +1288,7 @@ async function sendMessage(text){
 function sendPrompt(t){$('chatInput').value=t;sendMessage(t)}
 function sendSticker(s){addMsg('u',s,timeStr());conv.push({role:'user',content:s,time:timeStr()});saveChat();$('stickerPanel').classList.remove('show');setTimeout(()=>{const r=['哈哈 😄','收到啦~','好可爱！','嗯嗯 ✨','🤗','感受到你了'];addMsg('l',r[Math.floor(Math.random()*r.length)],timeStr(),true);Audio.play('receive')},800)}
 async function callAPI(){
-    if(isLoggedIn){const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];const result=await LumiAPI.aiChat(currentChar,msgs,0.9,500);if(result&&result.content)return result;if(result===null&&!isLoggedIn){}else if(result)throw new Error('AI返回为空');if(!S.apiKey)throw new Error('云端服务暂时不可用')}
+    if(isLoggedIn){const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];const result=await LumiAPI.aiChat(currentChar,msgs,0.9,500);if(result&&result.content)return result.content;if(result===null&&!isLoggedIn){}else if(result)throw new Error('AI返回为空');if(!S.apiKey)throw new Error('云端服务暂时不可用')}
     const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];
     const r=await fetch(S.apiBase+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.apiKey},body:JSON.stringify({model:S.model,messages:msgs,temperature:.9,max_tokens:500,top_p:.95,frequency_penalty:.3,presence_penalty:.3})});
     if(!r.ok){const t=await r.text();throw new Error(r.status+': '+t.substring(0,200))}
