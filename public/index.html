@@ -1365,6 +1365,8 @@
             
             if (typeof response === 'string') {
                 aiReply = response;
+            } else if (response.content) {
+                aiReply = response.content;
             } else if (response.reply) {
                 aiReply = response.reply;
             } else if (response.message) {
@@ -1375,16 +1377,12 @@
                 aiReply = response.data;
             } else if (response.data && response.data.reply) {
                 aiReply = response.data.reply;
+            } else if (response.data && response.data.content) {
+                aiReply = response.data.content;
             } else if (response.choices && response.choices[0]) {
                 aiReply = response.choices[0].message?.content || response.choices[0].text || '';
             } else {
-                // 尝试从响应中提取任何字符串内容
-                const str = JSON.stringify(response);
-                if (str && str.length > 2 && str !== '{}') {
-                    aiReply = str;
-                } else {
-                    throw new Error('AI 回复格式无法解析');
-                }
+                throw new Error('AI 回复格式无法解析');
             }
             
             if (!aiReply) {
