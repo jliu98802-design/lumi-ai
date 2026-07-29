@@ -1307,11 +1307,23 @@ function sendPrompt(t){$('chatInput').value=t;sendMessage(t)}
 function sendSticker(s){addMsg('u',s,timeStr());conv.push({role:'user',content:s,time:timeStr()});saveChat();$('stickerPanel').classList.remove('show');setTimeout(()=>{const r=['哈哈 😄','收到啦~','好可爱！','嗯嗯 ✨','🤗','感受到你了'];addMsg('l',r[Math.floor(Math.random()*r.length)],timeStr(),true);Audio.play('receive')},800)}
 async function callAPI(){
     let raw='';
-    if(isLoggedIn){const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];const result=await LumiAPI.aiChat(currentChar,msgs,0.9,500);if(result&&result.content){raw=result.content}else if(result===null&&!isLoggedIn){}else if(result)throw new Error('AI返回为空');if(!S.apiKey&&!raw)throw new Error('云端服务暂时不可用')}
-    if(!raw){const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];
-    const r=await fetch(S.apiBase+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.apiKey},body:JSON.stringify({model:S.model,messages:msgs,temperature:.9,max_tokens:500,top_p:.95,frequency_penalty:.3,presence_penalty:.3})});
-    if(!r.ok){const t=await r.text();throw new Error(r.status+': '+t.substring(0,200))}
-    const d=await r.json();raw=d.choices[0].message.content}
+    // 始终优先尝试服务端代理（支持登录和游客）
+    try{
+        const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];
+        const headers={'Content-Type':'application/json'};
+        if(authToken)headers['Authorization']='Bearer '+authToken;
+        const r=await fetch(API_BASE_URL+'/api/ai/chat',{method:'POST',headers,body:JSON.stringify({characterId:currentChar,messages:msgs,temperature:0.9,max_tokens:500})});
+        if(r.ok){const d=await r.json();if(d&&d.content)raw=d.content}
+        else if(r.status===401){authToken='';isLoggedIn=false;localStorage.removeItem('lumi_token');updateAuthUI()}
+    }catch(e){console.warn('Server proxy failed:',e.message)}
+    // 回退：直连DeepSeek（需要用户自己的API Key）
+    if(!raw&&S.apiKey){
+        const msgs=[{role:'system',content:getSystemPrompt()},...conv.slice(-20)];
+        const r=await fetch(S.apiBase+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.apiKey},body:JSON.stringify({model:S.model,messages:msgs,temperature:.9,max_tokens:500,top_p:.95,frequency_penalty:.3,presence_penalty:.3})});
+        if(!r.ok){const t=await r.text();throw new Error(r.status+': '+t.substring(0,200))}
+        const d=await r.json();raw=d.choices[0].message.content;
+    }
+    if(!raw)throw new Error('网络好像出了点问题，检查一下网络连接？');
     // 清理AI回复中可能混入的HTML标签
     raw=raw.replace(/<\/?p\s*>/gi,'\n\n').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').trim();
     return raw;
