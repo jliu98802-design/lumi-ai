@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 });
 
 // Version-based cache busting: redirect to versioned URL BEFORE static files
-const CURRENT_VERSION = '31.0';
+const CURRENT_VERSION = '31.1';
 app.get('/', (req, res) => {
   if (!req.query.v || req.query.v !== CURRENT_VERSION) {
     return res.redirect(302, `/?v=${CURRENT_VERSION}`);

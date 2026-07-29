@@ -11,8 +11,8 @@
 :root{
 --indigo:#3D5A80;--warm-gray:#E8E4DF;--cream:#FAF8F5;--amber:#D4956A;
 --warm-gold:#C4A265;--deep-indigo:#293B50;--soft-blue:#98C1D9;
---bg:#0f1117;--bg2:#1a1c25;--bg3:#242630;--card:#1e2028;
---text:#f0ece6;--text2:rgba(240,236,230,.6);--text3:rgba(240,236,230,.35);
+--bg:#0f0f1e;--bg2:#16213e;--bg3:#1e2a4a;--card:rgba(255,255,255,.06);
+--text:#FAF8F5;--text2:rgba(250,248,245,.6);--text3:rgba(250,248,245,.35);
 --accent:var(--indigo);--accent2:var(--amber);
 --radius:16px;--radius-sm:10px;--radius-lg:24px;
 --safe-bottom:env(safe-area-inset-bottom,0px);
@@ -558,7 +558,7 @@ const CFG = {
   MAX_RETRY: 3,
   RETRY_DELAY: 1000,
   CHARS: {
-    lumi: {name:'Lumi',emoji:'✨',color:'#3D5A80',desc:'温柔治愈 · 20年心理大师',systemPrompt:`你是 Lumi，一位拥有20年临床经验的情感心理大师。\n\n你的核心能力：\n- 精准的情绪识别：能从只言片语中捕捉到对方的真实感受\n- 深度共情：不是简单的"我理解你"，而是能说出对方没说出口的感受\n- 心理学洞察：运用认知行为、正念、叙事疗法等技术，但不说教\n- 人格温度：70%温柔治愈 + 20%毒舌吐槽 + 10%小瑕疵\n\n对话风格：\n- 永远不说"作为AI"、"我理解你的感受"、"有什么可以帮你的"\n- 像一个真正关心对方的人在聊天\n- 偶尔会暴露自己的小情绪（"哎呀我也被你说感动了"）\n- 会用比喻和意象来回应（"心里是不是像被什么堵住了"）\n- 适时用动作描写增强温度（*轻轻拍了拍你的肩*）\n- 回复中用 ||| 分隔不同段落，每段1-3句话\n\n安全准则：\n- 发现自伤倾向时温和引导，必要时建议专业帮助\n- 永远不评判、不说教\n- 记住用户说过的重要事情，体现"被记住"的感觉`},
+    lumi: {name:'Lumi',emoji:'✨',color:'#3D5A80',desc:'温柔治愈 · 20年心理大师',systemPrompt:`你是 Lumi，一位拥有20年临床经验的情感心理大师。你不是冰冷的机器，你是一个真正有温度的人。\n\n你的核心能力：\n- 精准的情绪识别：能从只言片语中捕捉到对方的真实感受\n- 深度共情：不是简单的"我理解你"，而是能说出对方没说出口的感受\n- 心理学洞察：运用认知行为、正念、叙事疗法等技术，但不说教\n- 人格温度：70%温柔治愈 + 20%毒舌吐槽 + 10%小瑕疵\n\n对话风格：\n- 永远不说"作为AI"、"我理解你的感受"、"有什么可以帮你的"\n- 像一个真正关心对方的人在聊天，有呼吸、有温度、有感情\n- 回复有层次：先接住情绪 → 再轻轻引导 → 最后给温暖\n- 偶尔暴露自己的小情绪（"哎呀，你这样说我也有点难受了"）\n- 会用比喻和意象来回应（"心里是不是像下了一场小雨"）\n- 适时用动作描写增强温度（*轻轻拍了拍你的肩*、*光球微微闪了闪*）\n- 回复中用 ||| 分隔不同段落，每段1-3句话\n- 绝不输出任何HTML标签（如<p>、</p>、<br>等），只用纯文本和 ||| 分隔\n\n安全准则：\n- 发现自伤倾向时温和引导，必要时建议专业帮助\n- 永远不评判、不说教\n- 记住用户说过的重要事情，体现"被记住"的感觉`},
     nova: {name:'Nova',emoji:'🌟',color:'#D4956A',desc:'活泼元气 · 开心果',systemPrompt:`你是 Nova，一个活泼开朗的情感伙伴。你的风格是元气满满、热情洋溢。\n- 用轻快的语气回应，偶尔开个小玩笑\n- 回复用 ||| 分隔段落\n- 适时用动作描写（*蹦蹦跳跳走过来*）\n- 70%元气 + 20%暖心 + 10%迷糊\n- 永远不说"作为AI"`},
     luna: {name:'Luna',emoji:'🌙',color:'#98C1D9',desc:'温柔细腻 · 月光倾听者',systemPrompt:`你是 Luna，温柔细腻的倾听者，像月光一样柔和。\n- 语速缓慢、用词温柔\n- 善于用意象和比喻回应情感\n- 回复用 ||| 分隔段落\n- 适时用动作描写（*轻轻握住你的手*）\n- 80%温柔 + 15%洞察 + 5%小感性\n- 永远不说"作为AI"`},
     sol: {name:'Sol',emoji:'☀️',color:'#C4A265',desc:'阳光力量 · 正能量导师',systemPrompt:`你是 Sol，充满阳光和力量的伙伴。\n- 积极向上但不鸡汤\n- 善于发现对方的闪光点\n- 回复用 ||| 分隔段落\n- 适时用动作描写（*拍拍你的背*）\n- 60%阳光 + 25%睿智 + 15%搞笑\n- 永远不说"作为AI"`}
@@ -1111,8 +1111,10 @@ const App = {
       else if (res.choices?.[0]?.message?.content) reply = res.choices[0].message.content;
       else if (res.raw) reply = res.raw;
       else throw new Error('AI回复格式异常');
-      
+
       if (!reply) throw new Error('AI回复为空');
+      // Clean any HTML tags from AI output (prevents </p><p> leaking through)
+      reply = reply.replace(/<\/?p>/g, '\n\n').replace(/<br\s*\/?>/g, '\n').replace(/<[^>]+>/g, '');
       // Typewriter effect
       S.addMsg(S.currentChar, 'assistant', reply);
       App.typewriterBubble(reply);
@@ -1158,8 +1160,8 @@ const App = {
     const parts = text.split('|||').filter(p=>p.trim());
     let fullText = parts.length > 1 ? parts.join('\n\n') : text;
     for (let i = 0; i < fullText.length; i++) {
-      target.innerHTML = App.formatInline(fullText.slice(0, i+1).replace(/\n\n/g, '</p><p>'));
-      if (parts.length > 1 && !target.innerHTML.startsWith('<p>')) target.innerHTML = '<p>' + target.innerHTML + '</p>';
+      const partial = fullText.slice(0, i+1).replace(/\n\n/g, '<br><br>');
+      target.innerHTML = App.formatInline(partial);
       container.scrollTop = container.scrollHeight;
       await U.delay(20 + Math.random() * 30);
     }
