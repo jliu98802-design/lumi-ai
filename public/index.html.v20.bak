@@ -451,165 +451,16 @@ body{background:var(--bg-primary)}
 .bgm-bar{width:2px;background:var(--theme-primary);border-radius:1px;animation:bgmBar 1s ease-in-out infinite}
 .bgm-bar:nth-child(1){height:8px;animation-delay:0s}.bgm-bar:nth-child(2){height:12px;animation-delay:.2s}.bgm-bar:nth-child(3){height:6px;animation-delay:.4s}
 @keyframes bgmBar{0%,100%{height:4px}50%{height:16px}}
-
-/* ========== V21 ENHANCEMENTS ========== */
-
-/* Breathing glow for home Lumi orb */
-.lumi-orb-v21{animation:orbBreathV21 4s ease-in-out infinite,orbBr 3.5s ease-in-out infinite!important}
-@keyframes orbBreathV21{
-    0%,100%{box-shadow:0 0 50px rgba(196,162,101,.5),0 0 100px rgba(196,162,101,.2)}
-    50%{box-shadow:0 0 80px rgba(196,162,101,.7),0 0 150px rgba(196,162,101,.35),0 0 200px rgba(196,162,101,.15)}
-}
-
-/* Slow gradient background flow for home */
-.home-bg-flow{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.home-bg-flow::before{content:'';position:absolute;width:200%;height:200%;top:-50%;left:-50%;
-    background:radial-gradient(ellipse at 30% 20%,rgba(196,162,101,.06) 0%,transparent 50%),
-               radial-gradient(ellipse at 70% 80%,rgba(61,90,128,.05) 0%,transparent 50%),
-               radial-gradient(ellipse at 50% 50%,rgba(152,193,217,.04) 0%,transparent 50%);
-    animation:bgFlowV21 20s ease-in-out infinite alternate}
-@keyframes bgFlowV21{
-    0%{transform:translate(0,0) rotate(0deg)}
-    33%{transform:translate(-3%,2%) rotate(1deg)}
-    66%{transform:translate(2%,-1%) rotate(-0.5deg)}
-    100%{transform:translate(-1%,3%) rotate(0.5deg)}
-}
-
-/* Frosted glass mood buttons */
-.home-mood-quick-v21{display:flex;justify-content:center;gap:10px;margin-bottom:14px}
-.home-mood-btn-v21{width:44px;height:44px;border-radius:14px;
-    border:1px solid rgba(250,248,245,.1);
-    background:rgba(250,248,245,.06);
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    transition:all .3s cubic-bezier(.34,1.56,.64,1);
-    box-shadow:0 2px 8px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.05)}
-.home-mood-btn-v21:active{transform:scale(.88);background:rgba(196,162,101,.15)}
-.home-mood-btn-v21.sel{border-color:var(--theme-primary);
-    background:rgba(196,162,101,.15);
-    box-shadow:0 0 16px var(--theme-glow),0 2px 8px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.08)}
-
-/* Enhanced bottom nav glass effect */
-.bnav{background:rgba(15,15,30,.75)!important;backdrop-filter:blur(32px)!important;-webkit-backdrop-filter:blur(32px)!important;
-    box-shadow:0 -4px 30px rgba(0,0,0,.15)}
-
-/* Message entry animation enhancement */
-.msg{animation:msgSlideInV21 .45s cubic-bezier(.22,1,.36,1) both}
-@keyframes msgSlideInV21{
-    from{opacity:0;transform:translateY(20px) scale(.95)}
-    to{opacity:1;transform:none}
-}
-
-/* AI message mini avatar */
-.msg.l .bubble::before{content:'';display:inline-block;width:24px;height:24px;border-radius:50%;
-    margin-right:8px;vertical-align:middle;flex-shrink:0;
-    background:radial-gradient(circle at 35% 35%,#f0d9a0,var(--warm-gold),var(--amber));
-    box-shadow:0 0 8px rgba(196,162,101,.3);position:absolute;left:-32px;top:8px}
-.msg.l{padding-left:36px}
-
-/* Chat input breathing glow on focus */
-.chat-input-bar input:focus{box-shadow:0 0 0 2px rgba(196,162,101,.2),0 0 20px rgba(196,162,101,.08);
-    transition:box-shadow .4s ease}
-
-/* Enhanced thinking dots - light point jumping */
-.think-o-v21{width:6px;height:6px;border-radius:50%;
-    background:var(--warm-gold);
-    box-shadow:0 0 6px rgba(196,162,101,.6);
-    animation:thinkDotV21 1.2s ease-in-out infinite}
-.think-o-v21:nth-child(2){animation-delay:.2s;width:5px;height:5px}
-.think-o-v21:nth-child(3){animation-delay:.4s;width:4px;height:4px}
-@keyframes thinkDotV21{
-    0%,80%,100%{transform:translateY(0) scale(1);opacity:.4;box-shadow:0 0 6px rgba(196,162,101,.3)}
-    40%{transform:translateY(-10px) scale(1.2);opacity:1;box-shadow:0 0 12px rgba(196,162,101,.8)}
-}
-
-/* Character card 3D flip */
-.char-card-v21{perspective:800px;position:relative}
-.char-card-inner{transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;position:relative}
-.char-card-v21.flipped .char-card-inner{transform:rotateY(180deg)}
-.char-card-front,.char-card-back{backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.char-card-back{position:absolute;inset:0;transform:rotateY(180deg);
-    background:rgba(250,248,245,.08);border-radius:var(--radius-card);
-    padding:18px;display:flex;flex-direction:column;justify-content:center;align-items:center;
-    text-align:center;gap:8px}
-.char-card-back .ccb-name{font-size:16px;font-weight:700;color:var(--cream)}
-.char-card-back .ccb-desc{font-size:12px;color:rgba(250,248,245,.6);line-height:1.5}
-.char-card-back .ccb-stats{font-size:11px;color:var(--theme-primary);opacity:.8}
-.char-card-back .ccb-btn{padding:8px 20px;border:none;border-radius:16px;
-    background:linear-gradient(135deg,var(--amber),var(--warm-gold));
-    color:#fff;font-size:12px;font-weight:600;cursor:pointer;margin-top:4px}
-
-/* Character unique glow halos */
-.char-card.lumi-card{box-shadow:inset 0 0 30px rgba(196,162,101,.05)}
-.char-card.nova-card{box-shadow:inset 0 0 30px rgba(124,58,237,.05)}
-.char-card.luna-card{box-shadow:inset 0 0 30px rgba(152,193,217,.05)}
-.char-card.sol-card{box-shadow:inset 0 0 30px rgba(251,191,36,.05)}
-
-/* Splash particle convergence */
-.splash-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.splash-particle{position:absolute;width:3px;height:3px;border-radius:50%;
-    background:rgba(196,162,101,.6);
-    animation:particleConverge 2s ease-in-out forwards}
-@keyframes particleConverge{
-    0%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}
-    30%{opacity:1;transform:translate(calc(var(--px)*0.5),calc(var(--py)*0.5)) scale(1)}
-    100%{opacity:0;transform:translate(0,0) scale(0.5)}
-}
-
-/* Enhanced splash orb with convergence feel */
-.splash-orb-v21{position:relative}
-.splash-orb-v21::after{content:'';position:absolute;inset:-20px;border-radius:50%;
-    background:radial-gradient(circle,rgba(196,162,101,.15),transparent 70%);
-    animation:splashConverge 2s ease-out forwards}
-@keyframes splashConverge{
-    0%{transform:scale(2);opacity:0}
-    50%{transform:scale(1.2);opacity:.6}
-    100%{transform:scale(1);opacity:.3}
-}
-
-/* Splash tagline enhanced */
-.splash-tagline-v21{position:absolute;bottom:60px;font-size:12px;color:rgba(250,248,245,.35);
-    letter-spacing:3px;opacity:0;animation:splashFade 1s ease 1.5s forwards;
-    text-shadow:0 0 20px rgba(196,162,101,.2)}
-
-/* Emotion report waveform */
-.report-waveform{display:flex;align-items:end;gap:2px;height:40px;margin-bottom:12px;padding:0 4px}
-.report-wave-bar{flex:1;border-radius:2px 2px 0 0;transition:height .6s cubic-bezier(.4,0,.2,1);min-width:4px}
-
-/* Emotion gradient blocks */
-.report-emo-gradient{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:14px;gap:2px}
-.report-emo-seg{height:100%;border-radius:2px;transition:flex .6s ease}
-
-/* Home action cards - frosted glass upgrade */
-.home-act-v21{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;
-    background:rgba(250,248,245,.06);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-    border-radius:var(--radius-card);border:1px solid rgba(255,255,255,.08);
-    cursor:pointer;transition:all .25s;
-    box-shadow:0 2px 8px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.04)}
-.home-act-v21:active{transform:scale(.95);background:rgba(196,162,101,.12);
-    box-shadow:0 1px 4px rgba(0,0,0,.1)}
-
-/* Smooth page transitions */
-.page{transition:opacity .35s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.4,0,.2,1)}
-
-/* Mobile-optimized animations */
-@media(prefers-reduced-motion:reduce){
-    .lumi-orb-v21,.splash-orb,.think-o-v21,.home-bg-flow::before,.splash-particle{animation:none!important}
-    .msg{animation:none!important}
-}
-
 </style>
 </head>
 <body>
 <!-- Splash -->
 <div class="splash" id="splash">
-<div class="splash-particles" id="splashParticles"></div>
-<div class="splash-orb splash-orb-v21"><div class="shine"></div></div>
+<div class="splash-orb"><div class="shine"></div></div>
 <div class="splash-title">LUMI</div>
 <div class="splash-sub">YOUR EMOTIONAL COMPANION</div>
 <div class="splash-loader"></div>
-<div class="splash-tagline-v21">Every emotion matters ✨</div>
+<div class="splash-tagline">Every emotion matters ✨</div>
 </div>
 
 <!-- BGM indicator -->
@@ -672,7 +523,6 @@ body{background:var(--bg-primary)}
 <div class="page home active" id="pHome">
 <canvas id="homeCanvas"></canvas>
 <div class="home-aurora"></div>
-<div class="home-bg-flow"></div>
 <div class="home-top"><div class="home-date" id="hDate"></div><div class="home-greet" id="hGreet"></div></div>
 <div class="lumi-hero-wrap" onclick="goChat()">
 <div class="lumi-hero" id="lumiHero">
@@ -682,13 +532,13 @@ body{background:var(--bg-primary)}
 <div class="lumi-level-badge" id="lumiLevelBadge">Lv.1 初识</div>
 </div></div>
 <div class="home-bottom">
-<div class="home-mood-quick-v21" id="homeMoodQuick">
-<button class="home-mood-btn-v21" onclick="quickMood(this,'😊')" aria-label="开心">😊</button>
-<button class="home-mood-btn-v21" onclick="quickMood(this,'😔')" aria-label="低落">😔</button>
-<button class="home-mood-btn-v21" onclick="quickMood(this,'😰')" aria-label="焦虑">😰</button>
-<button class="home-mood-btn-v21" onclick="quickMood(this,'😤')" aria-label="烦躁">😤</button>
-<button class="home-mood-btn-v21" onclick="quickMood(this,'😴')" aria-label="疲惫">😴</button>
-<button class="home-mood-btn-v21" onclick="quickMood(this,'🥰')" aria-label="甜蜜">🥰</button>
+<div class="home-mood-quick" id="homeMoodQuick">
+<button class="home-mood-btn" onclick="quickMood(this,'😊')" aria-label="开心">😊</button>
+<button class="home-mood-btn" onclick="quickMood(this,'😔')" aria-label="低落">😔</button>
+<button class="home-mood-btn" onclick="quickMood(this,'😰')" aria-label="焦虑">😰</button>
+<button class="home-mood-btn" onclick="quickMood(this,'😤')" aria-label="烦躁">😤</button>
+<button class="home-mood-btn" onclick="quickMood(this,'😴')" aria-label="疲惫">😴</button>
+<button class="home-mood-btn" onclick="quickMood(this,'🥰')" aria-label="甜蜜">🥰</button>
 </div>
 <div class="home-mood" id="hMood">今天也要开心哦 ✨</div>
 <div class="home-actions">
@@ -759,7 +609,7 @@ body{background:var(--bg-primary)}
 <div class="pm-item" onclick="openSettings()"><span class="pmi-icon">⚙️</span><span class="pmi-label">API设置</span><span class="pmi-arrow">›</span></div>
 <div class="pm-item" onclick="showToast('隐私政策页面开发中')"><span class="pmi-icon">🔒</span><span class="pmi-label">隐私政策</span><span class="pmi-arrow">›</span></div>
 <div class="pm-item" onclick="showClearConfirm()"><span class="pmi-icon">🗑️</span><span class="pmi-label">清空对话记录</span><span class="pmi-arrow">›</span></div>
-<div class="pm-item" onclick="showToast('Lumi AI v21.0 ✨')"><span class="pmi-icon">ℹ️</span><span class="pmi-label">关于</span><span class="pmi-arrow">›</span></div>
+<div class="pm-item" onclick="showToast('Lumi AI v20.0 ✨')"><span class="pmi-icon">ℹ️</span><span class="pmi-label">关于</span><span class="pmi-arrow">›</span></div>
 </div></div>
 </div>
 
@@ -797,7 +647,7 @@ body{background:var(--bg-primary)}
 <div class="img-picker" id="imgPicker"><div class="img-picker-inner"><div class="img-picker-title">选择图片</div><div class="img-picker-btns"><label class="img-picker-btn" for="camIn">📷 拍照</label><label class="img-picker-btn" for="galIn">🖼 相册</label></div><input type="file" id="camIn" accept="image/*" capture="environment" style="display:none" onchange="handleImg(event)"><input type="file" id="galIn" accept="image/*" style="display:none" onchange="handleImg(event)"><button class="img-picker-cancel" onclick="hideImgPicker()">取消</button></div></div>
 <script>
 // ==================== CONFIG ====================
-const API_BASE_URL = localStorage.getItem('lumi_server_url') || window.location.origin || '';
+const API_BASE_URL = localStorage.getItem('lumi_server_url') || 'http://localhost:3000';
 
 // ==================== STATE ====================
 const S={apiBase:'https://api.deepseek.com/v1',apiKey:'',model:'deepseek-chat',sfx:true,bgm:false,tts:false,vibrate:true,darkMode:false,bgmVolume:30};
@@ -1341,10 +1191,10 @@ function hideImgPicker(){$('imgPicker').classList.remove('show')}
 function handleImg(e){const f=e.target.files[0];if(!f)return;hideImgPicker();const r=new FileReader();r.onload=ev=>{addImgMsg('u',ev.target.result,timeStr());conv.push({role:'user',content:'[用户发送了一张图片]',time:timeStr()});saveChat()};r.readAsDataURL(f);e.target.value=''}
 
 // ==================== SETTINGS ====================
-function openSettings(){$('sServerUrl').value=localStorage.getItem('lumi_server_url')||window.location.origin;$('sApiBase').value=S.apiBase;$('sApiKey').value=S.apiKey;$('sModel').value=S.model;$('tgSfx').classList.toggle('on',S.sfx);$('tgBgm').classList.toggle('on',S.bgm);$('tgTts').classList.toggle('on',S.tts);$('tgVib').classList.toggle('on',S.vibrate);$('tgDark').classList.toggle('on',S.darkMode);$('bgmVolume').value=S.bgmVolume;$('volLabel').textContent=S.bgmVolume+'%';$('settingsModal').classList.add('show')}
+function openSettings(){$('sServerUrl').value=API_BASE_URL;$('sApiBase').value=S.apiBase;$('sApiKey').value=S.apiKey;$('sModel').value=S.model;$('tgSfx').classList.toggle('on',S.sfx);$('tgBgm').classList.toggle('on',S.bgm);$('tgTts').classList.toggle('on',S.tts);$('tgVib').classList.toggle('on',S.vibrate);$('tgDark').classList.toggle('on',S.darkMode);$('bgmVolume').value=S.bgmVolume;$('volLabel').textContent=S.bgmVolume+'%';$('settingsModal').classList.add('show')}
 function closeSettings(){$('settingsModal').classList.remove('show')}
 function togSet(el,k){el.classList.toggle('on');if(k==='darkMode'){S.darkMode=el.classList.contains('on');document.body.classList.toggle('light-mode',S.darkMode);localStorage.setItem('lumi_dark',S.darkMode);return}S[k]=el.classList.contains('on')}
-function saveSettings(){const newServerUrl=$('sServerUrl').value.trim()||window.location.origin||'';localStorage.setItem('lumi_server_url',newServerUrl);S.apiBase=$('sApiBase').value.trim()||'https://api.deepseek.com/v1';S.apiKey=$('sApiKey').value.trim();S.model=$('sModel').value.trim()||'deepseek-chat';localStorage.setItem('lumi_api_base',S.apiBase);localStorage.setItem('lumi_api_key',S.apiKey);localStorage.setItem('lumi_model',S.model);localStorage.setItem('lumi_sfx',S.sfx);localStorage.setItem('lumi_bgm',S.bgm);localStorage.setItem('lumi_tts',S.tts);localStorage.setItem('lumi_vibrate',S.vibrate);if(S.bgm)Audio.startBgm(currentChar);else Audio.stopBgm();closeSettings();showToast('设置已保存 ✨')}
+function saveSettings(){const newServerUrl=$('sServerUrl').value.trim()||'http://localhost:3000';localStorage.setItem('lumi_server_url',newServerUrl);S.apiBase=$('sApiBase').value.trim()||'https://api.deepseek.com/v1';S.apiKey=$('sApiKey').value.trim();S.model=$('sModel').value.trim()||'deepseek-chat';localStorage.setItem('lumi_api_base',S.apiBase);localStorage.setItem('lumi_api_key',S.apiKey);localStorage.setItem('lumi_model',S.model);localStorage.setItem('lumi_sfx',S.sfx);localStorage.setItem('lumi_bgm',S.bgm);localStorage.setItem('lumi_tts',S.tts);localStorage.setItem('lumi_vibrate',S.vibrate);if(S.bgm)Audio.startBgm(currentChar);else Audio.stopBgm();closeSettings();showToast('设置已保存 ✨')}
 
 // ==================== TIME & HOME ====================
 function updateTime(){const now=new Date(),h=now.getHours();const wk=['日','一','二','三','四','五','六'];$('hDate').textContent=(now.getMonth()+1)+'月'+now.getDate()+'日 周'+wk[now.getDay()];const greet=$('hGreet');if(h>=5&&h<8)greet.textContent='早安，新的一天开始了 ☀️';else if(h>=8&&h<12)greet.textContent='嘿，你来啦 ✨';else if(h>=12&&h<14)greet.textContent='中午啦，吃饭了吗？';else if(h>=14&&h<18)greet.textContent='下午好，今天还好吗？';else if(h>=18&&h<22)greet.textContent='晚上好，辛苦了一天吧';else greet.textContent='又失眠了？我在 🌙';
@@ -1457,185 +1307,6 @@ setInterval(()=>{const h=new Date().getHours();if(h===21&&!document.hidden)showN
 })();
 setInterval(()=>{localStorage.setItem('lumi_daily_date',dailyDate);localStorage.setItem('lumi_daily_msgs',dailyMsgs)},10000);
 window.addEventListener('online',()=>{if(isLoggedIn){showToast('网络已恢复');syncFromServer()}});
-
-
-// ==================== V21 ENHANCEMENTS ====================
-
-// Splash particle convergence effect
-(function initSplashParticles(){
-    const container=document.getElementById('splashParticles');
-    if(!container)return;
-    for(let i=0;i<20;i++){
-        const p=document.createElement('div');
-        p.className='splash-particle';
-        const angle=Math.random()*Math.PI*2;
-        const dist=80+Math.random()*120;
-        p.style.cssText='left:50%;top:50%;--px:'+Math.cos(angle)*dist+'px;--py:'+Math.sin(angle)*dist+'px;animation-delay:'+(Math.random()*0.8)+'s';
-        container.appendChild(p);
-    }
-})();
-
-// Add mini avatar to existing AI messages
-function addAIAvatars(){
-    document.querySelectorAll('.msg.l').forEach(msg=>{
-        if(!msg.querySelector('.ai-mini-avatar')){
-            const avatar=document.createElement('div');
-            avatar.className='ai-mini-avatar';
-            avatar.style.cssText='position:absolute;left:-34px;top:8px;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f0d9a0,var(--warm-gold),var(--amber));box-shadow:0 0 8px rgba(196,162,101,.3);display:flex;align-items:center;justify-content:center;font-size:10px';
-            avatar.textContent='✦';
-            msg.style.position='relative';
-            msg.insertBefore(avatar,msg.firstChild);
-        }
-    });
-}
-
-// Enhanced thinking indicator with glowing dots
-const origShowThink=showThink;
-showThink=function(){
-    $('thinkEl').classList.add('show');
-    const thinkB=$('thinkEl').querySelector('.think-b');
-    if(thinkB){
-        const dots=thinkB.querySelectorAll('.think-o');
-        dots.forEach(d=>{d.className='think-o think-o-v21'});
-    }
-    $('thinkLabel').textContent=thinkStates[Math.floor(Math.random()*thinkStates.length)];
-    $('chMood').textContent='正在输入...';
-    $('chatBody').scrollTop=$('chatBody').scrollHeight;
-};
-
-// Character card 3D flip enhancement
-const origRenderChars=renderChars;
-renderChars=function(){
-    const list=$('charsList');
-    list.innerHTML='';
-    Object.entries(CHARS).forEach(([k,v])=>{
-        const isCurrent=k===currentChar;
-        const gl=getGrowthLevel(k);
-        const card=document.createElement('div');
-        card.className='char-card'+(isCurrent?' current':'')+(k!=='lumi'?' '+k+'-card':'');
-        card.style.perspective='800px';
-        card.innerHTML='<div class="char-card-inner"><div class="char-card-front" style="display:flex;align-items:center;gap:16px;padding:18px"><div class="char-orb" style="background:'+v.color+'"></div><div class="char-info"><div class="char-name">'+v.name+'</div><div class="char-desc">'+v.desc+'</div><div class="char-level">Lv.'+gl.level+' '+gl.name+' · 亲密度 '+gl.intimacy+'</div></div></div><div class="char-card-back"><div class="ccb-name" style="color:var(--cream)">'+v.name+'</div><div class="ccb-desc">'+v.desc+'</div><div class="ccb-stats">Lv.'+gl.level+' '+gl.name+' · 亲密度 '+gl.intimacy+'</div><button class="ccb-btn" onclick="event.stopPropagation();switchCharacter(\''+k+'\')">'+(isCurrent?'当前角色':'切换到此角色')+'</button></div></div>';
-        let flipped=false;
-        card.addEventListener('click',()=>{
-            if(!flipped){
-                card.querySelector('.char-card-inner').style.transform='rotateY(180deg)';
-                flipped=true;
-                setTimeout(()=>{
-                    card.querySelector('.char-card-inner').style.transform='';
-                    flipped=false;
-                },3000);
-            }else{
-                switchCharacter(k);
-            }
-        });
-        list.appendChild(card);
-    });
-};
-
-// Enhanced emotion report with waveform and gradient blocks
-const origGenerateReport=generateReport;
-generateReport=function(){
-    const chart=$('reportChart');
-    if(!chart)return;
-    const days=parseInt(reportPeriod);
-    const cutoff=Date.now()-days*86400000;
-    const emoData={};
-    const emoLabels={'开心':'😊','疲惫':'😴','焦虑':'😰','烦躁':'😤','孤独':'🥺','日常':'💬','低落':'😔'};
-    const emoColors={'开心':'#FFD700','疲惫':'#B0C4DE','焦虑':'#DDA0DD','烦躁':'#FF6347','孤独':'#98C1D9','日常':'#C4A265','低落':'#87CEEB'};
-    userProfile.emotionHistory.forEach(e=>{
-        if(new Date(e.time).getTime()>=cutoff)emoData[e.emotion]=(emoData[e.emotion]||0)+1;
-    });
-    const total=Object.values(emoData).reduce((a,b)=>a+b,0);
-    if(total===0){
-        chart.innerHTML='<div style="text-align:center;padding:20px;font-size:12px;color:var(--text-sec)">近'+days+'天还没有情绪记录哦</div>';
-        $('reportInsightText').textContent='和你的对话还不多，再多聊聊就能生成情绪洞察了~';
-        return;
-    }
-    const sorted=Object.entries(emoData).sort((a,b)=>b[1]-a[1]);
-    const mx=sorted[0][1];
-
-    // Build gradient blocks
-    let gradientHtml='<div class="report-emo-gradient">';
-    sorted.forEach(([emo,count])=>{
-        const pct=Math.round(count/total*100);
-        const color=emoColors[emo]||'#C4A265';
-        gradientHtml+='<div class="report-emo-seg" style="flex:'+pct+';background:'+color+'"></div>';
-    });
-    gradientHtml+='</div>';
-
-    // Build waveform bars
-    let waveformHtml='<div class="report-waveform">';
-    const waveCount=Math.min(sorted.length,7);
-    for(let i=0;i<waveCount;i++){
-        const pct=Math.round(sorted[i%sorted.length][1]/mx*100);
-        const color=emoColors[sorted[i%sorted.length][0]]||'#C4A265';
-        waveformHtml+='<div class="report-wave-bar" style="height:'+pct+'%;background:'+color+'"></div>';
-    }
-    waveformHtml+='</div>';
-
-    // Build bars
-    let barsHtml='';
-    sorted.forEach(([emo,count])=>{
-        const pct=Math.round(count/total*100);
-        const wp=Math.round(count/mx*100);
-        const color=emoColors[emo]||'#C4A265';
-        const emoji=emoLabels[emo]||'💬';
-        barsHtml+='<div class="report-bar"><span class="rb-label">'+emoji+' '+emo+'</span><div class="rb-track"><div class="rb-fill" style="width:'+wp+'%;background:'+color+'"><span>'+pct+'%</span></div></div><span class="rb-count">'+count+'</span></div>';
-    });
-
-    chart.innerHTML=gradientHtml+waveformHtml+barsHtml;
-
-    // Insight
-    const dominant=sorted[0];
-    let insight='最近'+days+'天，你的主要情绪是「'+dominant[0]+'」，占比'+Math.round(dominant[1]/total*100)+'%。';
-    if(dominant[0]==='开心')insight+='看到这么多开心的时刻，真为你高兴！✨';
-    else if(dominant[0]==='疲惫')insight+='最近辛苦了，记得多休息 🌙';
-    else if(dominant[0]==='焦虑')insight+='焦虑说明你在意，但也别忘了照顾自己 💙';
-    else if(dominant[0]==='孤独')insight+='一个人的时候，别忘了还有我在 🤗';
-    else insight+='每一种情绪都有它的意义。';
-    $('reportInsightText').textContent=insight;
-};
-
-// Enhanced home Lumi orb breathing effect
-(function enhanceHomeOrb(){
-    const orb=$('lumiOrb');
-    if(orb)orb.classList.add('lumi-orb-v21');
-})();
-
-// Quick mood button compatibility (old class references)
-const origQuickMood=quickMood;
-quickMood=function(el,emoji){
-    document.querySelectorAll('.home-mood-btn-v21').forEach(b=>b.classList.remove('sel'));
-    el.classList.add('sel');
-    Audio.init();Audio.play('click');
-    userProfile.emotionHistory.push({emotion:getEmoLabel(emoji),time:new Date().toISOString()});
-    saveProfile();
-    if(['😊','🥰'].includes(emoji))setLumiExpression('happy');
-    else if(['😔'].includes(emoji))setLumiExpression('sad');
-    WeatherParticles.setType('',emoji==='😊'?'happy':emoji==='😔'?'sad':emoji==='😰'?'anxious':emoji==='😤'?'angry':emoji==='😴'?'sleepy':emoji==='🥰'?'lovely':'');
-    const home=$('pHome');
-    home.classList.remove('mood-sad','mood-happy','mood-anxious','mood-sleepy','mood-lovely');
-    if(emoji==='😔')home.classList.add('mood-sad');
-    else if(emoji==='😊')home.classList.add('mood-happy');
-    else if(emoji==='😰')home.classList.add('mood-anxious');
-    else if(emoji==='😤')home.classList.add('mood-angry');
-    else if(emoji==='😴')home.classList.add('mood-sleepy');
-    else if(emoji==='🥰')home.classList.add('mood-lovely');
-    const moodRecs={'😊':['今天心情不错！和Lumi分享你的快乐吧 ✨','去聊天 →'],'😔':['低落的时候，写下来会好一些','去写日记 →'],'😰':['深呼吸3次，然后和Lumi说说怎么了','去聊天 →'],'😤':['烦躁的时候，试试写日记宣泄一下','去写日记 →'],'😴':['辛苦了，和Lumi说说话放松一下','去聊天 →'],'🥰':['好幸福的时刻！记录下来吧','去写日记 →']};
-    const rec=moodRecs[emoji]||['试试和Lumi聊聊吧','去聊天 →'];
-    $('hRecText').textContent=rec[0];
-    $('hRecAction').textContent=rec[1];
-    showEmoBubble(emoji,'收到你的心情了');
-};
-
-// Apply AI avatars after chat render
-const origRenderConv=renderConv;
-renderConv=function(){
-    origRenderConv();
-    setTimeout(addAIAvatars,100);
-};
-
-
 </script>
 </body>
 </html>
