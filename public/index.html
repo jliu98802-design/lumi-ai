@@ -1450,6 +1450,7 @@ setInterval(()=>{const h=new Date().getHours();if(h===21&&!document.hidden)showN
 
 // ==================== INIT ====================
 (function init(){
+    try{
     S.apiBase=localStorage.getItem('lumi_api_base')||'https://api.deepseek.com/v1';
     S.apiKey=localStorage.getItem('lumi_api_key')||'';
     S.model=localStorage.getItem('lumi_model')||'deepseek-chat';
@@ -1493,6 +1494,16 @@ setInterval(()=>{const h=new Date().getHours();if(h===21&&!document.hidden)showN
     if(S.bgm){$('bgmIndicator').classList.add('show');Audio.init();Audio.startBgm(currentChar)}
     // Voice synthesis preload
     if('speechSynthesis' in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}
+    }catch(e){
+        console.error('[V21.6] Init error:', e.message, e.stack);
+        // Always hide splash even if init fails
+        const sp=document.getElementById('splash');
+        if(sp){sp.classList.add('hide');setTimeout(()=>sp.style.display='none',800)}
+        // Show auth overlay as fallback
+        const ao=document.getElementById('authOverlay');
+        if(ao)ao.classList.add('show');
+        showToast('加载失败: '+e.message);
+    }
 })();
 setInterval(()=>{localStorage.setItem('lumi_daily_date',dailyDate);localStorage.setItem('lumi_daily_msgs',dailyMsgs)},10000);
 window.addEventListener('online',()=>{if(isLoggedIn){showToast('网络已恢复');syncFromServer()}});
