@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>Lumi — 你的情绪伙伴</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23D4956A' opacity='0.8'/><circle cx='50' cy='50' r='30' fill='%23FAF8F5' opacity='0.6'/></svg>">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4956A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 :root{--indigo:#3D5A80;--warm-gray:#E8E4DF;--cream:#FAF8F5;--amber:#D4956A;--warm-gold:#C4A265;--deep-indigo:#293B50;--soft-blue:#98C1D9;--lumi-white:#F5F0EB;--amber-light:#E8B590;--amber-glow:rgba(212,149,106,.3);--text-sec:#7A8FA6;--text-light:#A0AEB8;--radius-card:16px;--radius-btn:24px;--theme-primary:#D4956A;--theme-secondary:#C4A265;--theme-glow:rgba(196,162,101,.5);--bg-primary:#0f0f1e;--bg-secondary:#16213e;--nav-bg:rgba(15,15,30,.95);--text-primary:#FAF8F5;--text-secondary:rgba(250,248,245,.6)}
 .theme-nova{--theme-primary:#a78bfa;--theme-secondary:#7c3aed;--theme-glow:rgba(124,58,237,.5)}
@@ -622,7 +626,7 @@ body{background:var(--bg-primary)}
 <div class="char-transition" id="charTransition"><div class="char-transition-flash" id="charFlash"></div></div>
 
 <!-- Age modal -->
-<div class="age-modal" id="ageModal"><div class="age-card"><h3>欢迎使用 Lumi</h3><p>请确认你已满16周岁。<br>登录后可云端同步数据。</p><div class="age-btns"><button class="age-no" onclick="ageDecline()">未满16岁</button><button class="age-yes" onclick="ageConfirm()">我已满16岁</button></div></div></div>
+<div class="age-modal" id="ageModal"><div class="age-card"><h3>欢迎使用 Lumi</h3><p>请确认你已满16周岁。<br>登录后可云端同步数据。</p><div class="age-btns"><button class="age-no" onclick="ageDecline()">未满16岁</button><button class="age-yes" onclick="ageConfirm()">我已满16岁</button></div><p style="margin-top:16px;font-size:11px;color:rgba(250,248,245,.35)">继续使用即表示同意 <a href="/privacy.html" target="_blank" style="color:#D4956A;text-decoration:underline">隐私政策与用户协议</a></p></div></div>
 
 <!-- Auth -->
 <div class="auth-overlay" id="authOverlay">
@@ -630,7 +634,7 @@ body{background:var(--bg-primary)}
 <div class="auth-card">
 <div class="auth-tabs"><button class="auth-tab act" onclick="switchAuthTab('login')">登录</button><button class="auth-tab" onclick="switchAuthTab('register')">注册</button></div>
 <div class="auth-form act" id="loginForm"><input class="auth-input" id="loginUser" placeholder="用户名" aria-label="用户名"><input class="auth-input" id="loginPass" type="password" placeholder="密码" aria-label="密码"><div class="auth-error" id="loginError"></div><button class="auth-submit" onclick="doLogin()">登录</button></div>
-<div class="auth-form" id="registerForm"><input class="auth-input" id="regUser" placeholder="用户名（至少3位）"><input class="auth-input" id="regPass" type="password" placeholder="密码（至少6位）"><input class="auth-input" id="regPass2" type="password" placeholder="确认密码"><div class="auth-error" id="regError"></div><button class="auth-submit" onclick="doRegister()">注册</button></div>
+<div class="auth-form" id="registerForm"><input class="auth-input" id="regUser" placeholder="用户名（至少3位）"><input class="auth-input" id="regPass" type="password" placeholder="密码（至少6位）"><input class="auth-input" id="regPass2" type="password" placeholder="确认密码"><div class="auth-error" id="regError"></div><button class="auth-submit" onclick="doRegister()">注册</button><p style="margin-top:12px;font-size:10px;color:rgba(250,248,245,.3);text-align:center">注册即表示同意 <a href="/privacy.html" target="_blank" style="color:#D4956A;text-decoration:underline">隐私政策与用户协议</a></p></div>
 <button class="auth-guest" onclick="guestMode()">先随便看看（游客模式）</button>
 </div></div>
 
@@ -1124,7 +1128,8 @@ function showClearConfirm(){showConfirm('清空对话','确定要清空所有对
 // ==================== AUTH ====================
 function switchAuthTab(tab){document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('act'));document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('act'));if(tab==='login'){document.querySelectorAll('.auth-tab')[0].classList.add('act');$('loginForm').classList.add('act')}else{document.querySelectorAll('.auth-tab')[1].classList.add('act');$('registerForm').classList.add('act')}}
 async function doLogin(){const u=$('loginUser').value.trim(),p=$('loginPass').value;if(!u||!p){$('loginError').textContent='请填写用户名和密码';return}$('loginError').textContent='';const btn=document.querySelector('#loginForm .auth-submit');btn.disabled=true;btn.textContent='登录中...';try{const data=await LumiAPI.login(u,p);authToken=data.token;authUsername=data.username;isLoggedIn=true;localStorage.setItem('lumi_token',authToken);localStorage.setItem('lumi_username',authUsername);await syncFromServer();updateAuthUI();$('authOverlay').classList.remove('show');showToast('欢迎回来 ✨')}catch(e){$('loginError').textContent=e.message==='401'?'用户名或密码错误':'登录失败: '+e.message}btn.disabled=false;btn.textContent='登录'}
-async function doRegister(){const u=$('regUser').value.trim(),p=$('regPass').value,p2=$('regPass2').value;if(u.length<3){$('regError').textContent='用户名至少3位';return}if(p.length<6){$('regError').textContent='密码至少6位';return}if(p!==p2){$('regError').textContent='两次密码不一致';return}$('regError').textContent='';const btn=document.querySelector('#registerForm .auth-submit');btn.disabled=true;btn.textContent='注册中...';try{const data=await LumiAPI.register(u,p);authToken=data.token;authUsername=data.username;isLoggedIn=true;localStorage.setItem('lumi_token',authToken);localStorage.setItem('lumi_username',authUsername);updateAuthUI();$('authOverlay').classList.remove('show');if(!localStorage.getItem('lumi_onboarded'))$('onboarding').classList.add('show');showToast('注册成功 ✨')}catch(e){const m=e.message;if(m.includes('409')||m.includes('exist'))$('regError').textContent='用户名已存在';else $('regError').textContent='注册失败: '+m}btn.disabled=false;btn.textContent='注册'}
+async function doRegister(){const u=$('regUser').value.trim(),p=$('regPass').value,p2=$('regPass2').value;if(u.length<3){$('regError').textContent='用户名至少3位';return}if(p.length<6){$('regError').textContent='密码至少6位';return}if(p!==p2){$('regError').textContent='两次密码不一致';return}$('regError').textContent='';const btn=document.querySelector('#registerForm .auth-submit');btn.disabled=true;btn.textContent='注册中...';try{const data=await LumiAPI.register(u,p);authToken=data.token;authUsername=data.username;isLoggedIn=true;localStorage.setItem('lumi_token',authToken);localStorage.setItem('lumi_username',authUsername);updateAuthUI();$('authOverlay').classList.remove('show');await migrateGuestData();if(!localStorage.getItem('lumi_onboarded'))$('onboarding').classList.add('show');showToast('注册成功 ✨')}catch(e){const m=e.message;if(m.includes('409')||m.includes('exist'))$('regError').textContent='用户名已存在';else $('regError').textContent='注册失败: '+m}btn.disabled=false;btn.textContent='注册'}
+async function migrateGuestData(){try{const chars=['lumi','nova','luna','sol'];for(const c of chars){const key='lumi_chat_'+c;const raw=localStorage.getItem(key);if(!raw)continue;const msgs=JSON.parse(raw);if(msgs&&msgs.length>0){await LumiAPI.saveChat(c,msgs.map(m=>({role:m.role,content:m.content})));localStorage.removeItem(key+'_migrated')}}}catch(e){console.warn('Guest data migration failed:',e)}try{const diary=localStorage.getItem('lumi_diary');if(diary){const entries=JSON.parse(diary);for(const e of entries){if(e.text&&e.text.length>0){await LumiAPI.createDiary(e.mood||'😊',e.text)}}}}catch(e){console.warn('Diary migration failed:',e)}showToast('历史记录已同步到云端 ✨')}
 function guestMode(){$('authOverlay').classList.remove('show');isLoggedIn=false;updateAuthUI();if(!localStorage.getItem('lumi_age_verified'))$('ageModal').classList.add('show');else if(!localStorage.getItem('lumi_onboarded'))$('onboarding').classList.add('show')}
 function doLogout(){authToken='';isLoggedIn=false;authUsername='';localStorage.removeItem('lumi_token');localStorage.removeItem('lumi_username');updateAuthUI();$('authOverlay').classList.add('show');showToast('已退出登录')}
 function updateAuthUI(){const bar=$('userBar');if(isLoggedIn){bar.classList.add('show');$('ubNick').textContent=userProfile.nickname||authUsername;$('ubMode').textContent='☁️ 云端'}else{bar.classList.add('show');$('ubNick').textContent='游客';$('ubMode').textContent='📱 本地'}$('ubSync').textContent=''}
@@ -1347,7 +1352,7 @@ function renderChars(){const list=$('charsList');list.innerHTML='';Object.entrie
 
 // ==================== DIARY ====================
 function pickDiaryMood(el,m){document.querySelectorAll('.dw-mood-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selectedDiaryMood=m;Audio.play('click')}
-function saveDiary(){const text=$('diaryText').value.trim();if(!text){showToast('写点什么吧');return}const entry={id:Date.now(),mood:selectedDiaryMood||'😊',text:text,date:new Date().toISOString(),aiResponse:''};if(S.apiKey){const prompt='用户写了一篇心情日记，心情是'+entry.mood+'，内容是：'+text+'。请给出一句温暖简短的回应（不超过30字）。';fetch(S.apiBase+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.apiKey},body:JSON.stringify({model:S.model,messages:[{role:'user',content:prompt}],temperature:.9,max_tokens:100})}).then(r=>r.json()).then(d=>{entry.aiResponse=d.choices?.[0]?.message?.content||'你的感受我都收到了 ✨';localStorage.setItem('lumi_diary',JSON.stringify(diaryEntries));renderDiaryList()}).catch(()=>{entry.aiResponse='你的感受我都收到了 ✨';localStorage.setItem('lumi_diary',JSON.stringify(diaryEntries));renderDiaryList()})}else{entry.aiResponse='你的感受我都收到了 ✨'}diaryEntries.unshift(entry);localStorage.setItem('lumi_diary',JSON.stringify(diaryEntries));$('diaryText').value='';selectedDiaryMood='';document.querySelectorAll('.dw-mood-btn').forEach(b=>b.classList.remove('sel'));showToast('日记已保存 ✨');renderDiaryCal();renderDiaryList();updateProfileUI()}
+function saveDiary(){const text=$('diaryText').value.trim();if(!text){showToast('写点什么吧');return}const entry={id:Date.now(),mood:selectedDiaryMood||'😊',text:text,date:new Date().toISOString(),aiResponse:''};diaryEntries.unshift(entry);localStorage.setItem('lumi_diary',JSON.stringify(diaryEntries));$('diaryText').value='';selectedDiaryMood='';document.querySelectorAll('.dw-mood-btn').forEach(b=>b.classList.remove('sel'));showToast('日记已保存 ✨');renderDiaryCal();renderDiaryList();updateProfileUI();const prompt='用户写了一篇心情日记，心情是'+entry.mood+'，内容是：'+text+'。请以Lumi的身份，给出一句温暖简短的回应（不超过30字）。用口语化短句，不要说教，不要输出HTML。';const msgs=[{role:'user',content:prompt}];fetch(API_BASE_URL+'/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':authToken?'Bearer '+authToken:''},body:JSON.stringify({characterId:currentChar,messages:msgs,temperature:0.9,max_tokens:100})}).then(r=>r.json()).then(d=>{entry.aiResponse=d.content||'你的感受我都收到了 ✨';localStorage.setItem('lumi_diary',JSON.stringify(diaryEntries));renderDiaryList()}).catch(()=>{entry.aiResponse='你的感受我都收到了 ✨';localStorage.setItem('lumi_diary',JSON.stringify(diaryEntries));renderDiaryList()});if(isLoggedIn)LumiAPI.createDiary(entry.mood,entry.text)}
 function renderDiaryCal(){const cal=$('diaryCal');cal.innerHTML='';const now=new Date();const mc={'😊':'#FFD700','😔':'#98C1D9','😰':'#DDA0DD','😤':'#FF6347','😴':'#B0C4DE','🥰':'#FF69B4'};for(let i=13;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const ds=d.toDateString();const entry=diaryEntries.find(e=>new Date(e.date).toDateString()===ds);const div=document.createElement('div');div.className='dc-day';div.innerHTML='<span class="dcn">'+['日','一','二','三','四','五','六'][d.getDay()]+'</span><span class="dcd">'+d.getDate()+'</span><span class="dc-dot" style="background:'+(entry?mc[entry.mood]||'#C4A265':'transparent')+'"></span>';cal.appendChild(div)}}
 function renderDiaryList(){const list=$('diaryList');list.innerHTML='';if(diaryEntries.length===0){list.innerHTML='<div style="text-align:center;padding:30px;font-size:13px;color:var(--text-sec)">还没有日记，写下第一篇吧 ✨</div>';return}diaryEntries.slice(0,20).forEach(e=>{const d=document.createElement('div');d.className='diary-entry';const dt=new Date(e.date);d.innerHTML='<div class="de-head"><span class="de-mood">'+e.mood+'</span><span class="de-date">'+dt.toLocaleDateString('zh-CN')+' '+dt.getHours().toString().padStart(2,'0')+':'+dt.getMinutes().toString().padStart(2,'0')+'</span></div><div class="de-text">'+e.text+'</div>'+(e.aiResponse?'<div class="de-ai">💛 '+e.aiResponse+'</div>':'');list.appendChild(d)})}
 
@@ -1668,6 +1673,20 @@ renderConv=function(){
     origRenderConv();
     setTimeout(addAIAvatars,100);
 };
+
+// ==================== PWA SERVICE WORKER ====================
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+
+// Guest mode data warning
+(function(){
+    if(!isLoggedIn && localStorage.getItem('lumi_age_verified') && localStorage.getItem('lumi_onboarded')){
+        setTimeout(()=>{
+            showToast('💡 游客数据仅存在本设备，注册后可云端同步');
+        },2000);
+    }
+})();
 
 
 </script>
