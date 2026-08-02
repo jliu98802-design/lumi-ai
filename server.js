@@ -28,7 +28,7 @@ app.use('/api/', limiter);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    version: '33.0',
+    version: '34.0',
     timestamp: new Date().toISOString()
   });
 });
@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 });
 
 // Version-based cache busting: redirect to versioned URL BEFORE static files
-const CURRENT_VERSION = '33.0';
+const CURRENT_VERSION = '34.0';
 app.get('/', (req, res) => {
   if (!req.query.v || req.query.v !== CURRENT_VERSION) {
     return res.redirect(302, `/?v=${CURRENT_VERSION}`);

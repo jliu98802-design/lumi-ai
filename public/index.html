@@ -780,13 +780,6 @@ body{background:var(--bg-primary)}
 
 <!-- Settings Modal -->
 <div class="modal" id="settingsModal"><div class="modal-c"><div class="modal-h"><div class="modal-t">设置</div><button class="modal-x" onclick="closeSettings()">✕</button></div><div class="modal-body">
-<div class="fg"><label>🌐 服务器地址</label><input id="sServerUrl" placeholder="http://localhost:3000"><div class="fh">Lumi后端服务地址</div></div>
-<div style="border-top:1px solid rgba(61,90,128,.06);margin:12px 0;padding-top:12px">
-<div class="fg"><label>🔑 DeepSeek API Base</label><input id="sApiBase" placeholder="https://api.deepseek.com/v1"><div class="fh">默认 <code>https://api.deepseek.com/v1</code></div></div>
-<div class="fg"><label>🔑 DeepSeek API Key</label><input id="sApiKey" type="password" placeholder="sk-..."></div>
-<div class="fg"><label>模型</label><input id="sModel" placeholder="deepseek-chat"></div>
-</div>
-<div style="border-top:1px solid rgba(61,90,128,.06);margin:16px 0 12px;padding-top:12px">
 <div class="srow"><div><div class="sr-l">🔊 音效</div></div><button class="tog on" id="tgSfx" onclick="togSet(this,'sfx')"></button></div>
 <div class="srow"><div><div class="sr-l">🎵 背景音乐</div></div><button class="tog" id="tgBgm" onclick="togSet(this,'bgm')"></button></div>
 <div class="vol-slider" id="volSlider"><span>🔈</span><input type="range" min="0" max="100" value="30" id="bgmVolume" oninput="setBgmVolume(this.value)"><span id="volLabel">30%</span></div>
@@ -1367,7 +1360,7 @@ chatInput.addEventListener('input',updateSendBtn);
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendMessage(chatInput.value.trim())}});
 
 // ==================== VOICE ====================
-function toggleVoice(){if(isRec){cancelVoice();return}Audio.init();if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){showToast('浏览器不支持语音识别');return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;recognition=new SR();recognition.lang='zh-CN';recognition.continuous=false;recognition.interimResults=true;recognition.onresult=e=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;$('chatInput').value=t};recognition.onend=()=>{isRec=false;$('voiceRec').classList.remove('act');const t=$('chatInput').value.trim();if(t)sendMessage(t)};recognition.onerror=()=>{isRec=false;$('voiceRec').classList.remove('act')};recognition.start();isRec=true;$('voiceRec').classList.add('act');$('vrText').textContent='正在聆听...';Audio.play('click');animateWaveform()}
+function toggleVoice(){if(isRec){cancelVoice();return}Audio.init();if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){showToast('当前浏览器不支持语音，试试用文字聊天吧 ✍️');return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;recognition=new SR();recognition.lang='zh-CN';recognition.continuous=false;recognition.interimResults=true;recognition.onresult=e=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;$('chatInput').value=t};recognition.onend=()=>{isRec=false;$('voiceRec').classList.remove('act');const t=$('chatInput').value.trim();if(t)sendMessage(t)};recognition.onerror=()=>{isRec=false;$('voiceRec').classList.remove('act')};recognition.start();isRec=true;$('voiceRec').classList.add('act');$('vrText').textContent='正在聆听...';Audio.play('click');animateWaveform()}
 function cancelVoice(){if(recognition)try{recognition.abort()}catch(e){};isRec=false;$('voiceRec').classList.remove('act');$('chatInput').value=''}
 function speakText(t){if(!S.tts||!('speechSynthesis' in window))return;const c=t.replace(/[*#|]/g,'').trim();if(!c)return;const u=new SpeechSynthesisUtterance(c);u.lang='zh-CN';const cv=CHARS[currentChar]?.voice||{rate:.9,pitch:1.1};u.rate=cv.rate;u.pitch=cv.pitch;const vs=speechSynthesis.getVoices();const v=vs.find(v=>v.lang.startsWith('zh'));if(v)u.voice=v;speechSynthesis.speak(u)}
 
@@ -1377,13 +1370,13 @@ function toggleSticker(){$('stickerPanel').classList.toggle('show');Audio.play('
 // ==================== IMAGE ====================
 function showImgPicker(){Audio.play('click');$('imgPicker').classList.add('show')}
 function hideImgPicker(){$('imgPicker').classList.remove('show')}
-function handleImg(e){const f=e.target.files[0];if(!f)return;hideImgPicker();const r=new FileReader();r.onload=ev=>{addImgMsg('u',ev.target.result,timeStr());conv.push({role:'user',content:'[用户发送了一张图片]',time:timeStr()});saveChat()};r.readAsDataURL(f);e.target.value=''}
+function handleImg(e){const f=e.target.files[0];if(!f)return;hideImgPicker();const r=new FileReader();r.onload=ev=>{addImgMsg('u',ev.target.result,timeStr());conv.push({role:'user',content:'[图片]',time:timeStr(),image:ev.target.result});saveChat();showThink();$('chAvatar').classList.add('speaking');const headers={'Content-Type':'application/json'};if(authToken)headers['Authorization']='Bearer '+authToken;const sysP=getSystemPrompt()+'\n\n用户刚给你看了一张图片，但你无法直接看到图片内容。请用温暖好奇的方式回应，比如问问图片里是什么。保持简短自然，像发微信一样。不要说"作为AI"。';fetch(API_BASE_URL+'/api/ai/chat',{method:'POST',headers,body:JSON.stringify({characterId:currentChar,messages:[{role:'system',content:sysP},{role:'user',content:'[分享了一张图片]'}],temperature:0.9,max_tokens:100})}).then(r=>r.json()).then(d=>{hideThink();$('chAvatar').classList.remove('speaking');const resp=d.content||'看到啦~虽然暂时看不太清，但你能分享给我真好 ✨';addMsg('l',resp,timeStr());conv.push({role:'assistant',content:resp,time:timeStr()});saveChat();Audio.play('receive');speakText(resp)}).catch(()=>{hideThink();$('chAvatar').classList.remove('speaking');addMsg('l','看到啦~虽然我暂时看不太清图片内容，但你能分享给我真好 ✨',timeStr());Audio.play('receive')})};r.readAsDataURL(f);e.target.value=''}
 
 // ==================== SETTINGS ====================
-function openSettings(){$('sServerUrl').value=localStorage.getItem('lumi_server_url')||window.location.origin;$('sApiBase').value=S.apiBase;$('sApiKey').value=S.apiKey;$('sModel').value=S.model;$('tgSfx').classList.toggle('on',S.sfx);$('tgBgm').classList.toggle('on',S.bgm);$('tgTts').classList.toggle('on',S.tts);$('tgVib').classList.toggle('on',S.vibrate);$('tgDark').classList.toggle('on',S.darkMode);$('bgmVolume').value=S.bgmVolume;$('volLabel').textContent=S.bgmVolume+'%';$('settingsModal').classList.add('show')}
+function openSettings(){$('tgSfx').classList.toggle('on',S.sfx);$('tgBgm').classList.toggle('on',S.bgm);$('tgTts').classList.toggle('on',S.tts);$('tgVib').classList.toggle('on',S.vibrate);$('tgDark').classList.toggle('on',S.darkMode);$('bgmVolume').value=S.bgmVolume;$('volLabel').textContent=S.bgmVolume+'%';$('settingsModal').classList.add('show')}
 function closeSettings(){$('settingsModal').classList.remove('show')}
 function togSet(el,k){el.classList.toggle('on');if(k==='darkMode'){S.darkMode=el.classList.contains('on');document.body.classList.toggle('light-mode',S.darkMode);localStorage.setItem('lumi_dark',S.darkMode);return}S[k]=el.classList.contains('on')}
-function saveSettings(){const newServerUrl=$('sServerUrl').value.trim()||window.location.origin||'';localStorage.setItem('lumi_server_url',newServerUrl);S.apiBase=$('sApiBase').value.trim()||'https://api.deepseek.com/v1';S.apiKey=$('sApiKey').value.trim();S.model=$('sModel').value.trim()||'deepseek-chat';localStorage.setItem('lumi_api_base',S.apiBase);localStorage.setItem('lumi_api_key',S.apiKey);localStorage.setItem('lumi_model',S.model);localStorage.setItem('lumi_sfx',S.sfx);localStorage.setItem('lumi_bgm',S.bgm);localStorage.setItem('lumi_tts',S.tts);localStorage.setItem('lumi_vibrate',S.vibrate);if(S.bgm)Audio.startBgm(currentChar);else Audio.stopBgm();closeSettings();showToast('设置已保存 ✨')}
+function saveSettings(){localStorage.setItem('lumi_sfx',S.sfx);localStorage.setItem('lumi_bgm',S.bgm);localStorage.setItem('lumi_tts',S.tts);localStorage.setItem('lumi_vibrate',S.vibrate);if(S.bgm)Audio.startBgm(currentChar);else Audio.stopBgm();closeSettings();showToast('设置已保存 ✨')}
 
 // ==================== TIME & HOME ====================
 function updateTime(){const now=new Date(),h=now.getHours();const wk=['日','一','二','三','四','五','六'];$('hDate').textContent=(now.getMonth()+1)+'月'+now.getDate()+'日 周'+wk[now.getDay()];const greet=$('hGreet');if(h>=5&&h<8)greet.textContent='早安，新的一天开始了 ☀️';else if(h>=8&&h<12)greet.textContent='嘿，你来啦 ✨';else if(h>=12&&h<14)greet.textContent='中午啦，吃饭了吗？';else if(h>=14&&h<18)greet.textContent='下午好，今天还好吗？';else if(h>=18&&h<22)greet.textContent='晚上好，辛苦了一天吧';else greet.textContent='又失眠了？我在 🌙';
@@ -1495,7 +1488,9 @@ setInterval(()=>{const h=new Date().getHours();if(h===21&&!document.hidden)showN
     if('speechSynthesis' in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}
 })();
 setInterval(()=>{localStorage.setItem('lumi_daily_date',dailyDate);localStorage.setItem('lumi_daily_msgs',dailyMsgs)},10000);
-window.addEventListener('online',()=>{if(isLoggedIn){showToast('网络已恢复');syncFromServer()}});
+window.addEventListener('online',()=>{if(isLoggedIn){showToast('网络已恢复 ✨');syncFromServer()}const ob=document.getElementById('offlineBar');if(ob)ob.style.display='none'});
+window.addEventListener('offline',()=>{showToast('网络已断开 📡');let ob=document.getElementById('offlineBar');if(!ob){ob=document.createElement('div');ob.id='offlineBar';ob.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#e74c3c;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px';ob.innerHTML='📡 网络已断开，部分功能不可用';document.body.prepend(ob)}else{ob.style.display='flex'}});
+if(!navigator.onLine){let ob=document.getElementById('offlineBar');if(!ob){ob=document.createElement('div');ob.id='offlineBar';ob.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#e74c3c;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px';ob.innerHTML='📡 网络已断开，部分功能不可用';document.body.prepend(ob)}}
 
 
 // ==================== V21 ENHANCEMENTS ====================
